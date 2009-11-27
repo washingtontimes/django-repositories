@@ -36,7 +36,9 @@ Contents
    
    goals
    installing
+   authentication
    settings
+   management_commands/index
 
 
 Indices and tables

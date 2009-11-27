@@ -1,5 +1,6 @@
 .. _settings.rst:
 
+
 .. _settings:
 
 ========
@@ -75,24 +76,26 @@ The default configuration for is::
 
 If the default configuration for the version control systems works for you, you can just configure the base path which contains all the repositories. By default, it is a directory named ``repositories`` within the application directory.
 
-If you set ``REPO_BASE_REPO_PATH = '/var/code/repositories/``, for example, it would store repositories in the following way::
+If you set ``REPO_BASE_REPO_PATH = '/var/code/repositories/``, for example, it would store repositories in the following way:
 
-	+var
-	+--code
-	+----repositories
-	+------bzr
-	+--------public
-	+--------private
-	+------git
-	+--------public
-	+--------private
-	+------hg
-	+--------public
-	+--------private
-	+------svn
-	+--------public
-	+--------private
+| |ety| |dir| var
+| |ety| |ety| |dir| code
+| |ety| |ety| |ety| |dir| repositories
+| |ety| |ety| |ety| |ety| |dir| bzr
+| |ety| |ety| |ety| |ety| |ety| |dir| public
+| |ety| |ety| |ety| |ety| |ety| |dir| private
+| |ety| |ety| |ety| |ety| |dir| git
+| |ety| |ety| |ety| |ety| |ety| |dir| public
+| |ety| |ety| |ety| |ety| |ety| |dir| private
+| |ety| |ety| |ety| |ety| |dir| hg
+| |ety| |ety| |ety| |ety| |ety| |dir| public
+| |ety| |ety| |ety| |ety| |ety| |dir| private
+| |ety| |ety| |ety| |ety| |dir| svn
+| |ety| |ety| |ety| |ety| |ety| |dir| public
+| |ety| |ety| |ety| |ety| |ety| |dir| private
 
+.. |dir| image:: _static/folder.png
+.. |ety| image:: _static/empty.png
 
 .. _repo_metadata_keys:
 
@@ -112,3 +115,20 @@ The :class:`SourceRepository` model supports adding metadata to repositories. ``
 For authentication and authorization purposes, the script requires the name of the repository the user is attempting to access. It gets this from the url. ``REPO_URL_PATTERN`` is a regular expression that contains ``(?P<repo_name>\w+)`` somewhere in it to retrieve the repository name.
 
 The default is: ``'^/\w+/\w+/(?P<repo_name>\w+)/'`` which allows for the default URLs like ``/svn/public/myrepo/`` and ``/git/private/repo2.git/``
+
+
+.. _repo_wsgi_auth_script:
+
+``REPO_WSGI_AUTH_SCRIPT``
+=========================
+
+The location of the authentication script. You should copy the script from the ``bin`` directory into the same directory as your Django wsgi script.
+
+The default is the ``/<path_to_app>/repositories/bin/auth.wsgi``.
+
+.. _wsgi_script:
+
+``WSGI_SCRIPT``
+===============
+
+An optional setting used in the Apache httpd configuration templates. You can set it or override the individual templates.
