@@ -67,3 +67,8 @@ METADATA_CHOICES = [(key, key) for key in METADATA_KEYS]
 
 DEFAULT_URL_PATTERN = r'^/\w+/\w+/(?P<repo_name>\w+)/'
 URL_PATTERN = getattr(settings, 'REPO_URL_PATTERN', DEFAULT_URL_PATTERN)
+
+DEFAULT_WSGI_AUTH_SCRIPT = os.path.join(os.path.dirname(__file__),'bin','auth.wsgi')
+WSGI_AUTH_SCRIPT = getattr(settings, 'REPO_WSGI_AUTH_SCRIPT', DEFAULT_WSGI_AUTH_SCRIPT)
+
+WSGI_SCRIPT = getattr(settings, 'WSGI_SCRIPT', '')
