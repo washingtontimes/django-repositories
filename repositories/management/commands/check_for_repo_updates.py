@@ -1,8 +1,8 @@
 import os
 from django.core.management.base import BaseCommand
-from projectmgr import settings
-from projectmgr.models import SourceRepository
-from projectmgr.signals import repository_changed
+from repositories import settings
+from repositories.models import SourceRepository
+from repositories.signals import repository_changed
 
 class Command(BaseCommand):
     def handle(self, *args, **options):

@@ -1,7 +1,7 @@
 import os
 from django.core.management.base import BaseCommand
-from projectmgr import settings
-from projectmgr.models import SourceRepository
+from repositories import settings
+from repositories.models import SourceRepository
 
 
 class Command(BaseCommand):
