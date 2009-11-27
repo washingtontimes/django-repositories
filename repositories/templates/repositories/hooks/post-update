@@ -1,0 +1,7 @@
+#!/bin/sh
+
+{% for remote in remote_repos %}
+#git pull {{ remote.name }} {{ remote.branch }}
+git push {{ remote.name }} {{ remote.branch }}
+{% endfor %}
+exec git-update-server-info
