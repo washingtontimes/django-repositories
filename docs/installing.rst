@@ -42,13 +42,15 @@ Installing Apache httpd Server Dependencies
 
 1. Install Apache httpd version 2.x. In Ubuntu, ``sudo apt-get install apache2``.
 
-2. Enable the mod_dav module. In Ubuntu, ``sudo a2enmod dav``.
+2. Enable the WebDAV module. In Ubuntu, ``sudo a2enmod dav``.
 
-3. Enable the authn_alias module ``sudo a2enmod authn_alias``
+3. Enable the WebDAV filesystem module. In Ubuntu, ``sudo a2enmod dav_fs``.
 
-4. Install mod_wsgi or mod_python, in Ubuntu: ``sudo apt-get install libapache2-mod-wsgi`` or ``sudo apt-get install libapache2-mod-python``.
+4. Enable the authn_alias module ``sudo a2enmod authn_alias``
 
-5. If you are serving Subversion repositories, install the mod_dav_svn module. In Ubuntu, ``sudo apt-get install libapache2-svn``.
+5. Install mod_wsgi, in Ubuntu: ``sudo apt-get install libapache2-mod-wsgi``.
+
+6. If you are serving Subversion repositories, install the WebDAV Subversion module. In Ubuntu, ``sudo apt-get install libapache2-svn``.
 
 
 Configuring Apache httpd
