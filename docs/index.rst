@@ -39,6 +39,8 @@ Contents
    authentication
    settings
    management_commands/index
+   signals
+   reference/index
 
 
 Indices and tables

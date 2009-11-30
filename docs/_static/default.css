@@ -391,10 +391,11 @@ div.body p.centered {
 
 table.docutils {
     border-collapse: collapse;
-    border-top: 1px solid #919699;
+border: 1px solid #919699;
+/*    border-top: 1px solid #919699;
     border-left: 1px solid #919699;
     border-right: 1px solid #919699;
-    font-size:12px;
+*/    font-size:12px;
     padding:8px;
     text-align:left;
     vertical-align:top;
@@ -473,6 +474,12 @@ dd {
 
 dt:target, .highlight {
     background-color: #fbe54e;
+}
+
+dl.method-group > dt {
+    font-weight: bold;
+    font-size: 1.2em;
+    border-bottom: 1px solid #999;
 }
 
 dl.glossary dt {
