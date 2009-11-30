@@ -6,6 +6,7 @@ Management Commands
 
 .. toctree::
    
-   check_for_updates
-   export_apache_conf
-   export_repos
+   repo_check_for_updates
+   repo_generate_apache_conf
+   repo_generate_auth
+   repo_export
