@@ -42,7 +42,7 @@ class SourceRepositoryManager(models.Manager):
         
         :param user: The :class:`User` for which to find :class:`SourceRepository` instances.
         :type user: :class:`User`
-        :param permission: The type of permission, one of :data:`projectmgr.PERM_CHOICES`
+        :param permission: The type of permission, one of :data:`repositories.models.PERM_CHOICES`\ . **Default:** 3 (read/write)
         :type permission: `integer`
         :returns: A :class:`QuerySet` of :class:`SourceRepository`
         :rtype: :class:`QuerySet`
@@ -280,6 +280,11 @@ class SourceRepository(models.Model):
 
 
 class RemoteSourceRepository(models.Model):
+    """
+    A source code repository on a remote server to which updates should be pushed.
+    
+    Pushing to a mirror on GitHub or LaunchPad is a common use.
+    """
     repo = models.ForeignKey('SourceRepository', verbose_name=_('Repository'))
     name = models.SlugField(_('Name'))
     branch = models.CharField(_('Branch'), max_length=255, default='master')
@@ -349,7 +354,7 @@ class Metadata(models.Model):
     * Specifying dependencies
     * Current version
     
-    The choices of metadata keys are configured in ``PROJMGR_METADATA_KEYS``\ .
+    The choices of metadata keys are configured in ``REPO_METADATA_KEYS``\ .
     A 'Version' key is added if it was not otherwise configured. A common choice
     for the metadata keys is the metadata for the Python Package Index.
     """
