@@ -8,10 +8,16 @@ from repositories import settings
 class Command(BaseCommand):
     help = "Generate an auth.wsgi script given the path to the project"
     def handle(self, *args, **options):
-        if len(args) == 0:
-            raise CommandError("This command requires the path to the project as a parameter.")
+        ctxt_dict = {}
+        if len(args) == 1:
+            ctxt_dict['project_root'] = args[0]
+        else:
+            path = ''
+            for item in args:
+                key, val = item.split('=')
+                ctxt_dict[key] = val
         
         tmpl = get_template('repositories/auth.wsgi')
-        ctxt_dict = {'project_root': args[0]}
+        ctxt_dict.update(options)
         ctxt = Context(ctxt_dict)
         print tmpl.render(ctxt)
