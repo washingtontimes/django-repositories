@@ -1,0 +1,4 @@
+include repositories/bin/*
+include repositories/management/__init__.py
+include repositories/management/commands/*.py
+recursive-include repositories/templates *.conf post-update
