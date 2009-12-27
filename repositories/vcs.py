@@ -84,6 +84,12 @@ class BaseVCS(object):
         """
         raise NotImplementedError
     
+    def update_remote(self, name, branch=None):
+        """
+        Update a remote repository.
+        """
+        raise NotImplementedError
+    
     def list_directory(self, path):
         """
         List the files directory in the repository
@@ -198,6 +204,16 @@ class GitRepository(BaseVCS):
         import subprocess
         repo_path = self.path
         cmd = ["cd %s;git remote rm %s" % (repo_path, name),]
+        try:
+            subprocess.check_call(cmd, shell=True)
+        except:
+            pass
+    
+    def update_remote(self, name, branch=None):
+        import subprocess
+        repo_path = self.path
+        the_branch = branch or "master"
+        cmd = ["cd %s;git push %s %s" % (repo_path, name, branch)]
         try:
             subprocess.check_call(cmd, shell=True)
         except:

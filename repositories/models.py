@@ -343,6 +343,24 @@ def generate_hooks(repo, htype='post-update', rtype='git'):
         except:
             pass
 
+def update_remote(sender, current_rev, previous_rev, **kwargs):
+    """
+    Update a remote repository when it receives a repository_changed signal and
+    it has one or more remote repositories.
+    
+    :param sender: The :class:`SourceRepository` that changed
+    :type sender: :class:`SourceRepository`
+    :param current_rev: The current revision
+    :type current_rev: ``string``
+    :param previous_rev: The previous revision found. There could be multiple
+                         revisions in between, depending on the checking frequency
+    :type previous_rev: ``string``
+    """
+    for remote_repo in sender.remotesourcerepositories_set.all():
+        remote_repo._vcs.update_remote(name=remote_repo.name, branch=remote_repo.branch)
+
+from signals import repository_changed
+repository_changed.connect(update_remote)
 
 
 class Metadata(models.Model):
