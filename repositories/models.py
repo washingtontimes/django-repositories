@@ -356,8 +356,8 @@ def update_remote(sender, current_rev, previous_rev, **kwargs):
                          revisions in between, depending on the checking frequency
     :type previous_rev: ``string``
     """
-    for remote_repo in sender.remotesourcerepositories_set.all():
-        remote_repo._vcs.update_remote(name=remote_repo.name, branch=remote_repo.branch)
+    for remote_repo in sender.remotesourcerepository_set.all():
+        sender._vcs.update_remote(name=remote_repo.name, branch=remote_repo.branch)
 
 from signals import repository_changed
 repository_changed.connect(update_remote)

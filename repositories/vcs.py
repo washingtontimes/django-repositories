@@ -215,7 +215,8 @@ class GitRepository(BaseVCS):
         the_branch = branch or "master"
         cmd = ["cd %s;git push %s %s" % (repo_path, name, branch)]
         try:
-            subprocess.check_call(cmd, shell=True)
+            subproc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            output = subproc.communicate()
         except:
             pass
     
