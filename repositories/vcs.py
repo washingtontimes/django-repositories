@@ -78,6 +78,12 @@ class BaseVCS(object):
         if self.exists():
             shutil.rmtree(self.path)
     
+    def create_remote(self, name, description='', homepage=''):
+        """
+        Create a remote repository on a separate service
+        """
+        raise NotImplementedError
+    
     def add_remote(self, name, url, branch=None):
         """
         Add a remote repository
@@ -190,6 +196,13 @@ class GitRepository(BaseVCS):
         if not self.name.endswith('.git'):
             self.name = "%s.git" % self.name
             self._update_path()
+    
+    def create_remote(self, name, description='', homepage=''):
+        from github2.client import Github
+        github = Github(username=settings.GITHUB_USER, api_token=settings.GITHUB_API_TOKEN)
+        new_repo = github.repo.create(name, description, homepage, public=True)
+        commit_url = new_repo.url.replace('http://','git@') + '.git'
+        return commit_url
     
     def add_remote(self, name, url, branch=None):
         import subprocess

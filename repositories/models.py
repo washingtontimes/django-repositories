@@ -288,7 +288,7 @@ class RemoteSourceRepository(models.Model):
     repo = models.ForeignKey('SourceRepository', verbose_name=_('Repository'))
     name = models.SlugField(_('Name'))
     branch = models.CharField(_('Branch'), max_length=255, default='master')
-    url = models.CharField(_('URL'), max_length=255)
+    url = models.CharField(_('URL'), max_length=255, blank=True, help_text='Leave blank and the remote repository will be created')
     notes = models.TextField(_('Notes'), blank=True, 
         help_text=_('Notes about this remote repository'))
     active = models.BooleanField(_('Active'), default=True)
@@ -302,6 +302,7 @@ class RemoteSourceRepository(models.Model):
         new = False
         if not self.id:
             new = True
+            self.url = self.url or self._vcs.create_remote(self.repo.name)
         super(RemoteSourceRepository, self).save(*args, **kwargs)
         # Current only git is supported for remote repos
         if new and self.repo.vc_system == 3:

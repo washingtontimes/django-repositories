@@ -72,3 +72,6 @@ DEFAULT_WSGI_AUTH_SCRIPT = os.path.join(os.path.dirname(__file__),'bin','auth.ws
 WSGI_AUTH_SCRIPT = getattr(settings, 'REPO_WSGI_AUTH_SCRIPT', DEFAULT_WSGI_AUTH_SCRIPT)
 
 WSGI_SCRIPT = getattr(settings, 'WSGI_SCRIPT', '')
+
+GITHUB_USERNAME = getattr(settings, 'REPO_GITHUB_USERNAME', '')
+GITHUB_API_TOKEN = getattr(settings, 'REPO_GITHUB_API_TOKEN', '')
