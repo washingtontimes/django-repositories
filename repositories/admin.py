@@ -2,7 +2,13 @@ from django import forms
 from django.contrib import admin
 from models import SourceRepository, RepositoryUser, Metadata, \
                     RepositoryGroup, RemoteSourceRepository
+from django.conf import settings
 
+if 'objectpermissions' in settings.INSTALLED_APPS:
+    from objectpermissions.admin import TabularUserPermInline, TabularGroupPermInline
+    repo_admin_inlines = [TabularUserPermInline, TabularGroupPermInline, MetadataInline, RemoteRepositoryInline]
+else:
+    repo_admin_inlines=[UserInline, GroupInline, MetadataInline, RemoteRepositoryInline]
 
 class UserInline(admin.TabularInline):
     model=RepositoryUser
@@ -27,6 +33,6 @@ class SourceRepositoryAdmin(admin.ModelAdmin):
     list_display = ('name', 'vc_system', 'anonymous_access', )
     ordering = ('name', 'vc_system', 'anonymous_access', )
     search_fields = ('name', 'description', 'summary')
-    inlines=[UserInline, GroupInline, MetadataInline, RemoteRepositoryInline]
+    inlines = repo_admin_inlines
 
 admin.site.register(SourceRepository, SourceRepositoryAdmin)

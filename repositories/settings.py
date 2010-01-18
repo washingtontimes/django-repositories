@@ -1,6 +1,8 @@
 import os
 from django.conf import settings
 
+USE_OBJECT_PERMS = 'objectpermissions' in settings.INSTALLED_APPS
+
 BIN_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__),'bin'))
 
 REPO_EXPORT_DIR = getattr(settings, 'REPO_EXPORT_DIR', 'exports')

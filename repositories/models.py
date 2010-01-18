@@ -32,7 +32,6 @@ PERM_CHOICES = (
     (7, "Owner")
 )
 
-
 class SourceRepositoryManager(models.Manager):
     
     def get_for_user(self, user, permission=3):
@@ -120,12 +119,15 @@ class SourceRepository(models.Model):
         
         :rtype: ``list`` of :class:`User`
         """
-        users = self.repositoryuser_set.filter(permission=7).select_related()
-        groups = self.repositorygroup_set.filter(permission=7).select_related()
+        if USE_OBJECT_PERMS:
+            users = self.userpermission_set.filter()
+        else:
+            users = self.repositoryuser_set.filter(permission=7).select_related()
+            groups = self.repositorygroup_set.filter(permission=7).select_related()
         
-        user_set = set([i.user for i in users])
-        for group in groups:
-            user_set.update(set(group.user_set.all()))
+            user_set = set([i.user for i in users])
+            for group in groups:
+                user_set.update(set(group.user_set.all()))
         return list(user_set)
     
     
@@ -154,15 +156,18 @@ class SourceRepository(models.Model):
         :returns: ``True`` if the :class:`User` is an owner
         :rtype: ``boolean``
         """
-        try:
-            repousr = self.repositoryuser_set.get(user=userobj)
-            return repousr.permission > 4
-        except:
-            pass
+        if USE_OBJECT_PERMS:
+            return userobj.has_object_perm(self, self.perms.owner)
+        else:
+            try:
+                repousr = self.repositoryuser_set.get(user=userobj)
+                return repousr.permission > 4
+            except:
+                pass
         
-        for group in self.repositorygroup_set.filter(permission__gte=5):
-            if userobj in group.group.user_set.all():
-                return True
+            for group in self.repositorygroup_set.filter(permission__gte=5):
+                if userobj in group.group.user_set.all():
+                    return True
         
         return False
     
@@ -176,15 +181,18 @@ class SourceRepository(models.Model):
         :returns: ``True`` if the :class:`User` can write to this repository
         :rtype: ``boolean``
         """
-        try:
-            repousr = self.repositoryuser_set.get(user=userobj)
-            return repousr.permission > 2
-        except:
-            pass
+        if USE_OBJECT_PERMS:
+            return userobj.has_object_perm(self, self.perms.write)
+        else:
+            try:
+                repousr = self.repositoryuser_set.get(user=userobj)
+                return repousr.permission > 2
+            except:
+                pass
         
-        for group in self.repositorygroup_set.filter(permission__gte=3):
-            if userobj in group.group.user_set.all():
-                return True
+            for group in self.repositorygroup_set.filter(permission__gte=3):
+                if userobj in group.group.user_set.all():
+                    return True
         
         return False
     
@@ -200,15 +208,18 @@ class SourceRepository(models.Model):
         """
         if self.anonymous_access:
             return True
-        try:
-            repousr = self.repositoryuser_set.get(user=userobj)
-            return True # If we have a user, it must have at least read
-        except:
-            pass
+        if USE_OBJECT_PERMS:
+            return userobj.has_object_perm(self, self.perms.read)
+        else:
+            try:
+                repousr = self.repositoryuser_set.get(user=userobj)
+                return True # If we have a user, it must have at least read
+            except:
+                pass
         
-        for group in self.repositorygroup_set.all():
-            if userobj in group.group.user_set.all():
-                return True
+            for group in self.repositorygroup_set.all():
+                if userobj in group.group.user_set.all():
+                    return True
         
         return False
     
@@ -277,6 +288,11 @@ class SourceRepository(models.Model):
         Return a directory listing from the given repository path. **Not Implemented Yet**
         """
         pass
+
+
+if settings.USE_OBJECT_PERMS:
+    import objectpermissions
+    objectpermissions.register(SourceRepository, ['read', 'write', 'owner'])
 
 
 class RemoteSourceRepository(models.Model):
@@ -388,32 +404,35 @@ class Metadata(models.Model):
             return self.key
 
 
-class RepositoryGroup(models.Model):
-    """
-    A group of people who have access to a repository and their access permissions.
-    """
+if not settings.USE_OBJECT_PERMS:
+    # These classes are used instead of object permissions to 
+    # remove the dependency on objectpermissions
+    class RepositoryGroup(models.Model):
+        """
+        A group of people who have access to a repository and their access permissions.
+        """
     
-    source_repository = models.ForeignKey(SourceRepository)
-    group = models.ForeignKey(Group)
-    permission = models.IntegerField(_('Permission'), choices=PERM_CHOICES)
+        source_repository = models.ForeignKey(SourceRepository)
+        group = models.ForeignKey(Group)
+        permission = models.IntegerField(_('Permission'), choices=PERM_CHOICES)
     
-    def __unicode__(self):
-        out = u"%s of %s with %s permission" % (self.group, 
-                self.source_repository, self.get_permission_display())
-        return out
+        def __unicode__(self):
+            out = u"%s of %s with %s permission" % (self.group, 
+                    self.source_repository, self.get_permission_display())
+            return out
 
 
-class RepositoryUser(models.Model):
-    """
-    A User of a repository and that person's access permissions.
-    """
+    class RepositoryUser(models.Model):
+        """
+        A User of a repository and that person's access permissions.
+        """
     
-    source_repository = models.ForeignKey(SourceRepository)
-    user = models.ForeignKey(User)
-    permission = models.IntegerField(_('Permission'), choices=PERM_CHOICES)
+        source_repository = models.ForeignKey(SourceRepository)
+        user = models.ForeignKey(User)
+        permission = models.IntegerField(_('Permission'), choices=PERM_CHOICES)
     
-    def __unicode__(self):
-        out = u"%s of %s with %s permission" % (self.user, 
-                self.source_repository, self.get_permission_display())
+        def __unicode__(self):
+            out = u"%s of %s with %s permission" % (self.user, 
+                    self.source_repository, self.get_permission_display())
         
-        return out
+            return out

@@ -1,5 +1,5 @@
 import unittest, os
-from projectmgr.models import SourceRepository
+from models import SourceRepository
 import settings
 PUBLIC_REPO_DIR = settings.VCS_CONFIG[1]['public_path']
 PRIVATE_REPO_DIR = settings.VCS_CONFIG[1]['private_path']
