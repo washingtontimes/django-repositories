@@ -46,6 +46,8 @@ class SourceRepositoryManager(models.Manager):
         :returns: A :class:`QuerySet` of :class:`SourceRepository`
         :rtype: :class:`QuerySet`
         """
+        if settings.USE_OBJECT_PERMS:
+            return user.get_objects_with_perms(SourceRepository, permission)
         project_ids = []
         if permission == 1:
             # We have to add in every Public source repository in only this case
@@ -119,7 +121,7 @@ class SourceRepository(models.Model):
         
         :rtype: ``list`` of :class:`User`
         """
-        if USE_OBJECT_PERMS:
+        if settings.USE_OBJECT_PERMS:
             users = self.userpermission_set.filter()
         else:
             users = self.repositoryuser_set.filter(permission=7).select_related()
@@ -156,7 +158,7 @@ class SourceRepository(models.Model):
         :returns: ``True`` if the :class:`User` is an owner
         :rtype: ``boolean``
         """
-        if USE_OBJECT_PERMS:
+        if settings.USE_OBJECT_PERMS:
             return userobj.has_object_perm(self, self.perms.owner)
         else:
             try:
@@ -181,7 +183,7 @@ class SourceRepository(models.Model):
         :returns: ``True`` if the :class:`User` can write to this repository
         :rtype: ``boolean``
         """
-        if USE_OBJECT_PERMS:
+        if settings.USE_OBJECT_PERMS:
             return userobj.has_object_perm(self, self.perms.write)
         else:
             try:
@@ -208,7 +210,7 @@ class SourceRepository(models.Model):
         """
         if self.anonymous_access:
             return True
-        if USE_OBJECT_PERMS:
+        if settings.USE_OBJECT_PERMS:
             return userobj.has_object_perm(self, self.perms.read)
         else:
             try:

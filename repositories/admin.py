@@ -18,12 +18,14 @@ class RemoteRepositoryInline(admin.TabularInline):
 
 
 if 'objectpermissions' in settings.INSTALLED_APPS:
+    USE_OBJECT_PERMS = True
     from objectpermissions.admin import TabularUserPermInline, TabularGroupPermInline
     if 'projects' in settings.INSTALLED_APPS:
         repo_admin_inlines = [MetadataInline, RemoteRepositoryInline]
     else:
         repo_admin_inlines = [TabularUserPermInline, TabularGroupPermInline, MetadataInline, RemoteRepositoryInline]
 else:
+    USE_OBJECT_PERMS = False
     from models import RepositoryUser, RepositoryGroup
     
     class UserInline(admin.TabularInline):
@@ -42,6 +44,20 @@ class SourceRepositoryAdmin(admin.ModelAdmin):
     search_fields = ('name', 'description', 'summary')
     inlines = repo_admin_inlines
     popup_fields = ('name', 'vc_system', 'repo_template')
+    
+    def save_model(self, request, obj, form, change):
+        super(SourceRepositoryAdmin, self).save_model(request, obj, form, change)
+        if not change and USE_OBJECT_PERMS:
+            request.user.grant_object_perm(obj, ['read','write','owner'])
+    
+    def queryset(self, request):
+        """
+        Filter the objects displayed in the change_list to show only those with
+        write or owner permissions
+        """
+        if request.user.is_superuser:
+            return super(SourceRepositoryAdmin, self).queryset(request)
+        return SourceRepository.objects.get_for_user(request.user, 6) # write = 2, owner = 4
     
     def get_form(self, request, obj=None, **kwargs):
         """
