@@ -77,6 +77,7 @@ class SourceRepository(models.Model):
     repo_url = models.CharField(editable=False, max_length=255)
     current_rev = models.CharField(blank=True, max_length=50, editable=False)
     previous_rev = models.CharField(blank=True, max_length=50, editable=False)
+    inactive = models.BooleanField(default=False)
     
     class Meta:
         verbose_name = _("Source Repository")

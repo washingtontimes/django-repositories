@@ -29,8 +29,9 @@ class RemoteRepositoryInline(admin.TabularInline):
     model=RemoteSourceRepository
 
 class SourceRepositoryAdmin(admin.ModelAdmin):
-    list_filter = ('anonymous_access', 'vc_system')
-    list_display = ('name', 'vc_system', 'anonymous_access', )
+    list_filter = ('anonymous_access', 'vc_system', 'inactive',)
+    list_display = ('name', 'vc_system', 'anonymous_access', 'inactive',)
+    list_editable = ('anonymous_access', 'inactive')
     ordering = ('name', 'vc_system', 'anonymous_access', )
     search_fields = ('name', 'description', 'summary')
     inlines = repo_admin_inlines
