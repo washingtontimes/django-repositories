@@ -2,14 +2,17 @@ from distribute_setup import use_setuptools
 use_setuptools()
 
 from setuptools import setup
+import repositories
 
 try:
     long_description = open('README').read()
 except IOError:
     long_description = ''
 
+
+
 setup(name='django-repositories',
-      version='0.1.1',
+      version=repositories.__version__,
       description='Version Control system management',
       long_description=long_description,
       license='Apache Software License',
